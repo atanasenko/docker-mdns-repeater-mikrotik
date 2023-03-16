@@ -5,7 +5,13 @@ set -e
 
 HOSTNAME="mDns"
 INTERFACE="eth0"
-VLANS="20 100"
+VLANS=$@
+IFNAMES=""
+
+[ -z ${VLANS+x} ] && { 
+    echo "Vlans are not specified"
+    exit 1
+}
 
 MTU=$(ip link show "$INTERFACE" | awk '{print $5}')
 
@@ -26,6 +32,7 @@ for VLAN in $VLANS; do
     }
     echo "starting dhcp client on ${IFNAME}"
     udhcpc -b -i "$IFNAME" -x hostname:"$HOSTNAME" -p "/var/run/udhcpc.${IFNAME}.pid"
+    IFNAMES="$IFNAMES $IFNAME"
 done
 
-exec "$@"
+/bin/mdns-repeater -f $IFNAMES

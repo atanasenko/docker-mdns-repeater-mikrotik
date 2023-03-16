@@ -17,4 +17,4 @@ COPY run.sh /app/
 RUN chmod +x /app/run.sh
 
 ENTRYPOINT ["/app/run.sh"]
-CMD ["/bin/mdns-repeater", "-f", "eth0.20", "eth0.100"]
+CMD ["100", "200"]
